@@ -17,12 +17,14 @@ const App = () => {
       ...currentCourseGoals,
       {text: enteredGoalText, id: Math.random() * 1000},
     ]);
+    setEnteredGoalText('');
   }
   return (
     <View style={styles.appContainer}>
       <GoalInput
         onAddGoal={addGoalHandler}
         onGoalInputHandler={goalInputHandler}
+        enteredGoal={enteredGoalText}
       />
       <View style={styles.goalsContainer}>
         <FlatList
