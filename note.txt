@@ -218,3 +218,151 @@ const styles = StyleSheet.create({
 export default App;
 
 ===================================
+
+Touchable is the old way
+Pressable is the new way
+=================================
+
+import React, {useState} from 'react';
+import {View, StyleSheet, FlatList} from 'react-native';
+import GoalInput from './components/GoalInput';
+import GoalItem from './components/GoalItem';
+
+const App = () => {
+  const [enteredGoalText, setEnteredGoalText] = useState();
+  const [courseGoals, setCourseGoals] = useState([]);
+
+  function goalInputHandler(enteredText) {
+    setEnteredGoalText(enteredText);
+  }
+
+  function addGoalHandler() {
+    // console.log(courseGoals); //  [{"text":"Hello", key:3333442 }]
+    setCourseGoals(currentCourseGoals => [
+      ...currentCourseGoals,
+      {text: enteredGoalText, id: Math.random() * 1000},
+    ]);
+    setEnteredGoalText('');
+  }
+
+  function deleteGoalHandler(id) {
+    setCourseGoals(currentCourseGoals => {
+      return currentCourseGoals.filter(goal => goal.id !== id);
+    });
+  }
+
+  return (
+    <View style={styles.appContainer}>
+      <GoalInput
+        onAddGoal={addGoalHandler}
+        onGoalInputHandler={goalInputHandler}
+        enteredGoal={enteredGoalText}
+      />
+      <View style={styles.goalsContainer}>
+        <FlatList
+          data={courseGoals}
+          keyExtractor={item => item.id}
+          //itemData.item.text
+          renderItem={itemData => (
+            <GoalItem
+              text={itemData.item.text}
+              onDeleteItem={() => deleteGoalHandler(itemData.item.id)}
+            />
+          )}
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  appContainer: {
+    paddingTop: 50,
+    paddingHorizontal: 16,
+    flex: 1, //wrap content by default
+  },
+  goalsContainer: {
+    flex: 4,
+  },
+});
+
+export default App;
+
+
+
+
+
+import React from 'react';
+import {View, Button, TextInput, StyleSheet} from 'react-native';
+
+const GoalInput = props => {
+  return (
+    <View style={styles.inputContainer}>
+      <TextInput
+        onChangeText={props.onGoalInputHandler}
+        style={styles.textInput}
+        placeholder="Your course goal!"
+        value={props.enteredGoal}
+      />
+      <Button title="Add Goal" onPress={props.onAddGoal} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+    borderBottomColor: '#cccccc',
+    borderBottomWidth: 1,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#cccccc',
+    width: '70%',
+    padding: 8,
+  },
+});
+
+export default GoalInput;
+
+
+
+import {View, Text, StyleSheet, Pressable} from 'react-native';
+
+const GoalItem = props => {
+  return (
+    <View style={styles.goalItem}>
+      <Pressable
+        android_ripple={{color: '#210644'}}
+        onPress={props.onDeleteItem}
+        // style={({pressed}) => pressed && styles.pressedItem} //styling pressable for ios
+      >
+        <Text style={styles.goalText}>{props.text}</Text>
+      </Pressable>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  goalItem: {
+    margin: 8,
+    borderRadius: 6,
+    backgroundColor: '#5e0acc',
+  },
+  goalText: {
+    color: 'white',
+    padding: 8,
+  },
+  // pressedItem: {
+  //   opacity: 0.5,
+  // },
+});
+
+export default GoalItem;
+
+
+=====================================================
