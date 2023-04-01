@@ -21,6 +21,7 @@ const App = () => {
   }
 
   function addGoalHandler() {
+    console.log('hello');
     // console.log(courseGoals); //  [{"text":"Hello", key:3333442 }]
     setCourseGoals(currentCourseGoals => [
       ...currentCourseGoals,
@@ -82,3 +83,4 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+// adb reverse tcp:8097 tcp:8097
