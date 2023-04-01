@@ -1,86 +1,46 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, FlatList, Button} from 'react-native';
-import GoalInput from './components/GoalInput';
-import GoalItem from './components/GoalItem';
+import LinearGradient from 'react-native-linear-gradient';
+import {StyleSheet, ImageBackground} from 'react-native';
+import StartGameScreen from './screens/StartGameScreen';
+import GameScreen from './screens/GameScreen';
+import Colors from './constants/colors';
 
 const App = () => {
-  const [enteredGoalText, setEnteredGoalText] = useState();
-  const [courseGoals, setCourseGoals] = useState([]);
-  const [modalIsVisible, setModalIsVisible] = useState(false);
+  const [userNumber, setUserNumber] = useState();
 
-  function startAddGoalHandler() {
-    setModalIsVisible(true);
+  function pickedNumberHandler(pickedNumber) {
+    setUserNumber(pickedNumber);
   }
 
-  function endAddGoalHandler() {
-    setModalIsVisible(false);
-  }
+  let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
 
-  function goalInputHandler(enteredText) {
-    setEnteredGoalText(enteredText);
-  }
-
-  function addGoalHandler() {
-    console.log('hello');
-    // console.log(courseGoals); //  [{"text":"Hello", key:3333442 }]
-    setCourseGoals(currentCourseGoals => [
-      ...currentCourseGoals,
-      {text: enteredGoalText, id: Math.random() * 1000},
-    ]);
-    setEnteredGoalText('');
-    endAddGoalHandler();
-  }
-
-  function deleteGoalHandler(id) {
-    setCourseGoals(currentCourseGoals => {
-      return currentCourseGoals.filter(goal => goal.id !== id);
-    });
+  if (userNumber) {
+    screen = <GameScreen />;
   }
 
   return (
-    <View style={styles.appContainer}>
-      <Button
-        title="Add New Goal"
-        color="#5e0acc"
-        onPress={startAddGoalHandler}
-      />
-
-      <GoalInput
-        visible={modalIsVisible}
-        onAddGoal={addGoalHandler}
-        onCancel={endAddGoalHandler}
-        onGoalInputHandler={goalInputHandler}
-        enteredGoal={enteredGoalText}
-      />
-
-      <View style={styles.goalsContainer}>
-        <FlatList
-          data={courseGoals}
-          keyExtractor={item => item.id}
-          //itemData.item.text
-          renderItem={itemData => (
-            <GoalItem
-              text={itemData.item.text}
-              onDeleteItem={() => deleteGoalHandler(itemData.item.id)}
-            />
-          )}
-        />
-      </View>
-    </View>
+    <LinearGradient
+      colors={[Colors.primary700, Colors.accent500]}
+      style={styles.rootScreen}>
+      <ImageBackground
+        source={require('./assets/images/background.png')}
+        resizeMode="cover"
+        style={styles.rootScreen}
+        imageStyle={styles.backgroundImage}>
+        {/* <StartGameScreen /> */}
+        {screen}
+      </ImageBackground>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
-  appContainer: {
-    paddingTop: 50,
-    paddingHorizontal: 16,
-    flex: 1, //wrap content by default
-    backgroundColor: '#1e085a',
+  rootScreen: {
+    flex: 1,
   },
-  goalsContainer: {
-    flex: 4,
+  backgroundImage: {
+    opacity: 0.15,
   },
 });
 
 export default App;
-// adb reverse tcp:8097 tcp:8097
