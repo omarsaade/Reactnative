@@ -1,0 +1,438 @@
+
+
+hene/
+npx react-native init myapp --version 0.65
+npm run android
+
+
+nehna/
+react-native init
+npm run android
+
+================================	
+Globally:
+
+1-react-native init MyApp 
+2-cd MyApp
+3-npm start     or react-native start
+In a separate terminal or command prompt window, run the following command to start the app on your device or emulator:
+
+4-react-native run-android
+
+===========================
+main axis 
+ row: l to r , row reverse : r to l     // 1
+
+ col: t to b , col reverse : b to t
+ 
+cross axis
+  row: t to b , row reverse : b to t    // 2
+
+  col: r to l , col reverse : l to r
+
+justifycontent = main
+alignitems =  cross
+
+
+flex: 1 == width:99%
+flex:2 ==...
+
+
+Button doesnt have a  style prop
+
+// el parent
+flex: 1, //wrap content by default
+========================================
+
+onChangeText  mheme hayde ktir
+
+lezem thet scrollview jawa el view deyman
+scrollview hye limited naw3an ma ..yaane iza 3ana list fia 1000 shagle
+sar este3mel el scrollview ma ktir mnih , li2an kell harake..btjib el list kella
+its great for limited amount of content..like an article which have a fixed end at 
+some point, but for dynamic list , it could be super long.
+so we dont use scrollview
+===================================
+
+FlalList 3and alternative bel android esmo Recyclerview
+it will only render the items that actually visible.
+
+================================================
+flalist
+3anda galaza ano badda key metel el map , bas btenhat bi tari2a tenye
+hala2
+
+fina kamen na3mela bi tari2a tenye w netjanab el key ? kif
+
+
+
+first meth:
+
+
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Button,
+  FlatList,
+} from 'react-native';
+
+const App = () => {
+  const [enteredGoalText, setEnteredGoalText] = useState();
+  const [courseGoals, setCourseGoals] = useState([]);
+
+  function goalInputHandler(enteredText) {
+    setEnteredGoalText(enteredText);
+  }
+
+  function addGoalHandler() {
+    // console.log(courseGoals); //  [{"text":"Hello", key:3333442 }]
+    setCourseGoals(currentCourseGoals => [
+      ...currentCourseGoals,
+      {text: enteredGoalText, key: Math.random() * 1000},
+    ]);
+  }
+  return (
+    <View style={styles.appContainer}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          onChangeText={goalInputHandler}
+          style={styles.textInput}
+          placeholder="Your course goal!"
+        />
+        <Button title="Add Goal" onPress={addGoalHandler} />
+      </View>
+      <View style={styles.goalsContainer}>
+        <FlatList
+          data={courseGoals}
+      
+          renderItem={itemData => {
+            return (
+              <View style={styles.goalItem}>
+                <Text style={styles.goalText}>{itemData.item.text}</Text>
+              </View>
+            );
+          }}
+        />
+      </View>
+    </View>
+  );
+};
+
+
+export default App;
+
+
+second meth
+using id
+
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Button,
+  FlatList,
+} from 'react-native';
+
+const App = () => {
+  const [enteredGoalText, setEnteredGoalText] = useState();
+  const [courseGoals, setCourseGoals] = useState([]);
+
+  function goalInputHandler(enteredText) {
+    setEnteredGoalText(enteredText);
+  }
+
+  function addGoalHandler() {
+    // console.log(courseGoals); //  [{"text":"Hello", key:3333442 }]
+    setCourseGoals(currentCourseGoals => [
+      ...currentCourseGoals,
+      {text: enteredGoalText, id: Math.random() * 1000},
+    ]);
+  }
+  return (
+    <View style={styles.appContainer}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          onChangeText={goalInputHandler}
+          style={styles.textInput}
+          placeholder="Your course goal!"
+        />
+        <Button title="Add Goal" onPress={addGoalHandler} />
+      </View>
+      <View style={styles.goalsContainer}>
+        <FlatList
+          data={courseGoals}
+          keyExtractor={item => item.id}
+          renderItem={itemData => {
+            return (
+              <View style={styles.goalItem}>
+                <Text style={styles.goalText}>{itemData.item.text}</Text>
+              </View>
+            );
+          }}
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  appContainer: {
+    paddingTop: 50,
+    paddingHorizontal: 16,
+    flex: 1, //wrap content by default
+  },
+  inputContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+    borderBottomColor: '#cccccc',
+    borderBottomWidth: 1,
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#cccccc',
+    width: '70%',
+    padding: 8,
+  },
+  goalsContainer: {
+    flex: 4,
+  },
+  goalItem: {
+    margin: 8,
+    padding: 8,
+    borderRadius: 6,
+    backgroundColor: '#5e0acc',
+  },
+  goalText: {
+    color: 'white',
+  },
+});
+
+export default App;
+
+===================================
+
+Touchable is the old way
+Pressable is the new way
+=================================
+
+
+
+=====================================================
+run hol el tnen kell wahde menon bi separate terminal jawa el app
+ adb reverse tcp:8097 tcp:8097
+ reactdevtools
+ w 3mol reload men baada bteftah el devtools
+================================================
+
+
+
+import React, {useState} from 'react';
+import {View, StyleSheet, FlatList, Button} from 'react-native';
+import GoalInput from './components/GoalInput';
+import GoalItem from './components/GoalItem';
+
+const App = () => {
+  const [enteredGoalText, setEnteredGoalText] = useState();
+  const [courseGoals, setCourseGoals] = useState([]);
+  const [modalIsVisible, setModalIsVisible] = useState(false);
+
+  function startAddGoalHandler() {
+    setModalIsVisible(true);
+  }
+
+  function endAddGoalHandler() {
+    setModalIsVisible(false);
+  }
+
+  function goalInputHandler(enteredText) {
+    setEnteredGoalText(enteredText);
+  }
+
+  function addGoalHandler() {
+    console.log('hello');
+    // console.log(courseGoals); //  [{"text":"Hello", key:3333442 }]
+    setCourseGoals(currentCourseGoals => [
+      ...currentCourseGoals,
+      {text: enteredGoalText, id: Math.random() * 1000},
+    ]);
+    setEnteredGoalText('');
+    endAddGoalHandler();
+  }
+
+  function deleteGoalHandler(id) {
+    setCourseGoals(currentCourseGoals => {
+      return currentCourseGoals.filter(goal => goal.id !== id);
+    });
+  }
+
+  return (
+    <View style={styles.appContainer}>
+      <Button
+        title="Add New Goal"
+        color="#5e0acc"
+        onPress={startAddGoalHandler}
+      />
+
+      <GoalInput
+        visible={modalIsVisible}
+        onAddGoal={addGoalHandler}
+        onCancel={endAddGoalHandler}
+        onGoalInputHandler={goalInputHandler}
+        enteredGoal={enteredGoalText}
+      />
+
+      <View style={styles.goalsContainer}>
+        <FlatList
+          data={courseGoals}
+          keyExtractor={item => item.id}
+          //itemData.item.text
+          renderItem={itemData => (
+            <GoalItem
+              text={itemData.item.text}
+              onDeleteItem={() => deleteGoalHandler(itemData.item.id)}
+            />
+          )}
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  appContainer: {
+    paddingTop: 50,
+    paddingHorizontal: 16,
+    flex: 1, //wrap content by default
+    backgroundColor: '#1e085a',
+  },
+  goalsContainer: {
+    flex: 4,
+  },
+});
+
+export default App;
+// adb reverse tcp:8097 tcp:8097
+
+
+
+
+
+
+
+import React from 'react';
+import {View, Button, TextInput, StyleSheet, Modal, Image} from 'react-native';
+
+const GoalInput = props => {
+  return (
+    <Modal visible={props.visible} animationType="slide">
+      <View style={styles.inputContainer}>
+        <Image
+          style={styles.image}
+          source={require('../assets/images/goal.jpg')}
+        />
+        <TextInput
+          onChangeText={props.onGoalInputHandler}
+          style={styles.textInput}
+          placeholder="Your course goal!"
+          value={props.enteredGoal}
+        />
+        <View style={styles.buttonContainer}>
+          <View style={styles.button}>
+            <Button title="Cancel" onPress={props.onCancel} color="#f31282" />
+          </View>
+          <View style={styles.button}>
+            <Button
+              title="Add Goal"
+              onPress={props.onAddGoal}
+              color="#5e0acc"
+            />
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    padding: 16,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#311b6b',
+  },
+  image: {
+    width: 100,
+    height: 100,
+    margin: 20,
+  },
+  textInput: {
+    color: '#120438',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#e4d0ff',
+    backgroundColor: '#e4d0ff',
+    width: '100%',
+    padding: 16,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    marginTop: 16,
+  },
+  button: {
+    width: 100,
+    marginHorizontal: 8,
+  },
+});
+
+export default GoalInput;
+
+
+
+
+
+import {View, Text, StyleSheet, Pressable} from 'react-native';
+
+const GoalItem = props => {
+  return (
+    <View style={styles.goalItem}>
+      <Pressable
+        android_ripple={{color: '#210644'}}
+        onPress={props.onDeleteItem}
+        // style={({pressed}) => pressed && styles.pressedItem} //styling pressable for ios
+      >
+        <Text style={styles.goalText}>{props.text}</Text>
+      </Pressable>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  goalItem: {
+    margin: 8,
+    borderRadius: 6,
+    backgroundColor: '#5e0acc',
+  },
+  goalText: {
+    color: 'white',
+    padding: 8,
+  },
+  // pressedItem: {
+  //   opacity: 0.5,
+  // },
+});
+
+export default GoalItem;
+================================================
+
+
+
+// https://unsplash.com/advertise
