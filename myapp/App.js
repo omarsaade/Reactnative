@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import {StyleSheet, ImageBackground} from 'react-native';
+import {StyleSheet, ImageBackground, StatusBar} from 'react-native';
 import StartGameScreen from './screens/StartGameScreen';
 import GameScreen from './screens/GameScreen';
 import GameOverScreen from './screens/GameOverScreen';
@@ -15,8 +15,6 @@ const App = () => {
     setUserNumber(pickedNumber);
     setGameIsOver(false);
   }
-
-  // console.log(require('./react-native.config').assets['OpenSans-Regular.ttf']);
 
   function gameOverHandler(numberOfRounds) {
     setGameIsOver(true);
@@ -47,18 +45,20 @@ const App = () => {
   }
 
   return (
-    <LinearGradient
-      colors={[Colors.primary700, Colors.accent500]}
-      style={styles.rootScreen}>
-      <ImageBackground
-        source={require('./assets/images/background.png')}
-        resizeMode="cover"
-        style={styles.rootScreen}
-        imageStyle={styles.backgroundImage}>
-        {/* <StartGameScreen /> */}
-        {screen}
-      </ImageBackground>
-    </LinearGradient>
+    <>
+      <StatusBar style="light" />
+      <LinearGradient
+        colors={[Colors.primary700, Colors.accent500]}
+        style={styles.rootScreen}>
+        <ImageBackground
+          source={require('./assets/images/background.png')}
+          resizeMode="cover"
+          style={styles.rootScreen}
+          imageStyle={styles.backgroundImage}>
+          {screen}
+        </ImageBackground>
+      </LinearGradient>
+    </>
   );
 };
 

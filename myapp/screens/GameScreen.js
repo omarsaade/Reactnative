@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Alert, Text, FlatList} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Alert,
+  FlatList,
+  useWindowDimensions,
+} from 'react-native';
 import Title from '../components/ui/Title';
 import NumberContainer from '../components/game/NumberContainer';
 import PrimaryButton from '../components/ui/PrimaryButton';
@@ -35,6 +41,8 @@ const GameScreen = ({userNumber, onGameOver}) => {
 
   const [guessRounds, setGuessRounds] = useState([currentGuess]);
 
+  const {width, height} = useWindowDimensions();
+
   // console.log(currentGuess);
   // useEffect is run after the component function has been executed
 
@@ -67,7 +75,6 @@ const GameScreen = ({userNumber, onGameOver}) => {
     } else {
       minBoundary = currentGuess + 1;
     }
-    // console.log(minBoundary, maxBoundary);
     const newRndNumber = generateRandomBetween(
       minBoundary,
       maxBoundary,
@@ -79,9 +86,9 @@ const GameScreen = ({userNumber, onGameOver}) => {
 
   const guessRoundsListLength = guessRounds.length;
 
-  return (
-    <View style={styles.screen}>
-      <Title>Opponent's Guess</Title>
+  // Default layout
+  let content = (
+    <>
       <NumberContainer>{currentGuess}</NumberContainer>
       <Card>
         <InstructionText style={styles.instructionText}>
@@ -96,11 +103,38 @@ const GameScreen = ({userNumber, onGameOver}) => {
           <View style={styles.buttonContainer}>
             <PrimaryButton onPress={nextGuessHandler.bind(this, 'greater')}>
               <AntiDesign name="plus" style={{color: 'white', fontSize: 24}} />
-              {/* <Icon name="plus" style={{color: 'white', fontSize: 20}} /> */}
             </PrimaryButton>
           </View>
         </View>
       </Card>
+    </>
+  );
+
+  // wide screen content
+  if (width > 500) {
+    content = (
+      <>
+        <View style={styles.buttonsContainerWide}>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, 'lower')}>
+              <AntiDesign name="minus" style={{color: 'white', fontSize: 24}} />
+            </PrimaryButton>
+          </View>
+          <NumberContainer>{currentGuess}</NumberContainer>
+          <View style={styles.buttonContainer}>
+            <PrimaryButton onPress={nextGuessHandler.bind(this, 'greater')}>
+              <AntiDesign name="plus" style={{color: 'white', fontSize: 24}} />
+            </PrimaryButton>
+          </View>
+        </View>
+      </>
+    );
+  }
+
+  return (
+    <View style={styles.screen}>
+      <Title>Opponent's Guess</Title>
+      {content}
       <View style={styles.listContainer}>
         <FlatList
           data={guessRounds}
@@ -121,6 +155,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 40,
+    alignItems: 'center',
   },
   instructionText: {
     marginBottom: 12,
@@ -131,11 +166,14 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
   },
+  buttonsContainerWide: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   listContainer: {
     flex: 1,
     padding: 16,
   },
 });
-
 
 export default GameScreen;
